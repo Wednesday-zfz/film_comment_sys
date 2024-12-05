@@ -69,19 +69,11 @@
             <el-icon><User /></el-icon>
             <span>个人资料</span>
           </el-menu-item>
-          <el-menu-item index="/password">
-            <el-icon><Lock /></el-icon>
-            <span>修改密码</span>
-          </el-menu-item>
-          <el-menu-item index="login" @click="logout">
-            <el-icon><SwitchButton /></el-icon>
-            <span>退出系统</span>
-          </el-menu-item>
         </el-menu>
       </div>
 
       <div style="flex: 1; width: 0; background-color: #f8f8ff; padding: 10px">
-        <router-view @updateUser="updateUser" />
+        <router-view @update-user="updateUser" />
       </div>
     </div>
 
@@ -89,28 +81,32 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import { reactive, watchEffect } from "vue";
 import router from "@/router";
 import {ElMessage} from "element-plus";
+
 
 const data = reactive({
   user: JSON.parse(localStorage.getItem('user') || '{}')
 })
 
-if (!data.user?.id) {
-  ElMessage.error('请登录！')
-  router.push('/login')
-}
-
 const updateUser = () => {
   data.user = JSON.parse(localStorage.getItem('user') || '{}')
+  console.log("aaaaa")
+  console.log(data.user)
 }
 
-const logout = () => {
-  ElMessage.success('退出成功')
-  localStorage.removeItem('user')
-  router.push('/login')
-}
+// 自动监听 localStorage 中的数据变化
+watchEffect(() => {
+  const storedUser = JSON.parse(localStorage.getItem('user') || '{}');
+  if (JSON.stringify(storedUser) !== JSON.stringify(data.user)) {
+    data.user = storedUser;
+  }
+});
+
+defineExpose({
+  updateUser
+})
 </script>
 
 <style scoped>

@@ -1,99 +1,167 @@
+<!-- User.vue -->
 <template>
-  <div style="width: 50%">
-    <div class="card" style="padding: 30px">
-      <el-form :model="data.user" label-width="100px" style="padding-right: 50px">
-        <div style="margin: 20px 0; text-align: center">
-          <el-upload :show-file-list="false" class="avatar-uploader" :action="uploadUrl" :on-success="handleFileUpload">
-            <img v-if="data.user.avatar" :src="data.user.avatar" class="avatar" />
-            <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-          </el-upload>
-        </div>
-        <el-form-item label="账号">
-          <el-input disabled v-model="data.user.username" autocomplete="off" />
-        </el-form-item>
-        <el-form-item label="名称">
-          <el-input v-model="data.user.name" autocomplete="off" />
-        </el-form-item>
-        <div style="text-align: center">
-          <el-button type="primary" @click="save">保存</el-button>
-        </div>
-      </el-form>
+  <div class="bg">
+    <div id="logout">
+      <el-button type="danger" @click="logout">退出登录</el-button>
+    </div>
+    <div class="userInfo" v-if="userInfo">
+      <el-row :gutter="10">
+        <el-col :span="12" style="width: 200px;">
+          <el-avatar :size="200" :src="userInfo.avatar"></el-avatar>
+        </el-col>
+        <el-col :span="12" style="width: 250px!important;">
+          <h2>
+            {{ userInfo.username }}
+            <span v-if="userInfo.gender === 'F'" class="gender-icon"><i class="fas fa-female"></i></span>
+            <span v-if="userInfo.gender === 'M'" class="gender-icon"><i class="fas fa-male"></i></span>
+            <span v-if="userInfo.gender === 'null'" class="gender-icon"><i class="fas fa-genderless"></i></span>
+          </h2>
+          <p class="in-one"><strong>邮箱：</strong>{{ userInfo.email }}</p>
+          <p class="in-one"><strong>手机号：</strong>{{ userInfo.phone }}</p>
+          <p class="in-one"><strong>您已使用小站：</strong>{{ userInfo.used_days }}天</p>
+        </el-col>
+      </el-row>
+    </div>
+    <div class="editUserInfo">
+      <button @click="showEditModal = true" class="userBtn">编辑用户信息</button>
+      <EditUserInfoModal
+          v-if="userInfo"
+          :userInfo="userInfo"
+          :showModal="showEditModal"
+          @update:showModal="showEditModal = $event"
+          @doUpdate="doUpdate"
+      />
+      <button @click="showChangePasswordModal = true" class="userBtn">修改密码</button>
+      <ChangePasswordModal
+          :showModal="showChangePasswordModal"
+          @update:showModal="showChangePasswordModal = $event"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import {reactive} from "vue"
+import {onMounted, ref} from "vue";
+import EditUserInfoModal from '@/components/EditUserInfoModal.vue';
+import ChangePasswordModal from '@/components/ChangePasswordModal.vue';
 import request from "@/utils/request";
-import {ElMessage} from "element-plus";
+import {ElMessageBox} from "element-plus";
 
-// 文件上传的接口地址
-const uploadUrl = import.meta.env.VITE_BASE_URL + '/files/upload'
+// 加载用户信息
+const userInfo = ref(null);
 
-const data = reactive({
-  user: JSON.parse(localStorage.getItem('user') || '{}'),
-})
+const emit = defineEmits(['update-user']);
 
-const handleFileUpload = (file) => {
-  data.user.avatar = file.data
-}
-
-const emit = defineEmits(["updateUser"])
-// 把当前修改的用户信息存储到后台数据库
-const save = () => {
-  if (data.user.role === 'ADMIN') {
-    request.put('/admin/update', data.user).then(res => {
-      if (res.code === '200') {
-        ElMessage.success('更新成功')
-        //把更新后的用户信息存储到缓存
-        localStorage.setItem('user', JSON.stringify(data.user))
-        emit('updateUser')
-      } else {
-        ElMessage.error(res.msg)
-      }
-    })
-  } else if (data.user.role === 'USER') {
-    request.put('/user/update', data.user).then(res => {
-      if (res.code === '200') {
-        ElMessage.success('更新成功')
-        //把更新后的用户信息存储到缓存
-        localStorage.setItem('user', JSON.stringify(data.user))
-        emit('updateUser')
-      } else {
-        ElMessage.error(res.msg)
-      }
-    })
+// 获取用户信息
+const getUserInfo = async () => {
+  try {
+    const res = await request.get('/user/');
+    if (res.data) {
+      userInfo.value = res.data;
+      localStorage.setItem('user', JSON.stringify(userInfo.value));
+      document.title = "欢迎" + userInfo.value.username + "来到个人中心";
+      emit("update-user"); // 通知父组件更新
+    }
+  } catch (e) {
+    console.error(e);
   }
-}
+};
+
+
+const showEditModal = ref(false);
+const showChangePasswordModal = ref(false);
+
+
+// onMounted 生命周期钩子
+onMounted(() => {
+  getUserInfo();
+});
+
+// 退出登录
+const logout = () => {
+  ElMessageBox.confirm('确定退出登录吗？', '提示', {
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    type: 'warning'
+  }).then(() => {
+    try {
+      request.post('/logout');
+      localStorage.removeItem('tokens');
+      localStorage.removeItem('user');
+      location.href = '/login';
+    } catch (e) {
+      console.error(e);
+    }
+  });
+};
+
+// 更新用户信息
+const doUpdate = () => {
+  getUserInfo();
+};
+
 </script>
 
 <style scoped>
-.avatar-uploader .avatar {
-  width: 120px;
-  height: 120px;
-  display: block;
-}
-</style>
-
-<style>
-.avatar-uploader .el-upload {
-  border: 1px dashed var(--el-border-color);
-  border-radius: 6px;
-  cursor: pointer;
+.bg {
+  min-height: 100%;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  background-size: 100%;
   position: relative;
-  overflow: hidden;
-  transition: var(--el-transition-duration-fast);
 }
 
-.avatar-uploader .el-upload:hover {
-  border-color: var(--el-color-primary);
+
+#logout {
+  margin-top: 10px;
+  margin-right: 10px;
+  float: right;
 }
 
-.el-icon.avatar-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 120px;
-  height: 120px;
+.editUserInfo {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+h3 {
+  margin: 0;
+  padding: 10px;
+  background-color: #4274b9;
+  color: white;
   text-align: center;
+}
+
+.userInfo {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.gender-icon {
+  margin-left: 10px;
+  font-size: 0.8em; /* 调整字体大小 */
+  color: #888; /* 调整颜色 */
+}
+
+.gender-icon i {
+  margin-right: 5px;
+}
+
+.in-one {
+  width: 240px;
+}
+
+.fa-female {
+  color: pink;
+}
+
+.fa-male {
+  color: blue;
+}
+
+.userBtn {
+  margin: 10px;
 }
 </style>

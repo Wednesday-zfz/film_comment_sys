@@ -20,6 +20,9 @@ export default defineConfig({
                 rewrite: (path) => path.replace(/^\/api/, ''), // 去掉路径中的 `/api`
             },
         },
+        fs: {
+            strict: false,
+        }
     },
     plugins: [
         vue(),
