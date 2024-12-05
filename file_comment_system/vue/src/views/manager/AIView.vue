@@ -23,7 +23,6 @@
               class="card-item"
               hoverable
               style="cursor: pointer;"
-              @click="goDetail(item.id)"
           >
             <div style="margin: 5px 0; font-size: 18px" class="line1">{{ item.name }}</div>
 
@@ -34,11 +33,11 @@
                        @click="goDetail(item.id)">
                 </el-tooltip>
                 <div style="flex: 1">
-                  <el-rate v-model="item.score" disabled allow-half show-score style="margin-bottom: 5px"></el-rate>
+                  <el-rate v-model="item.average_score" disabled allow-half show-score style="margin-bottom: 5px"></el-rate>
                   <div style="text-align: left; color: #1967e3;margin-bottom: 20px;">{{ item.commentNum }}人评论</div>
                   <el-tooltip class="item" effect="dark" content="跳转链接" placement="bottom">
                     <el-button type="primary" circle size="small">
-                      <a href="https://element-plus.org" target="_blank" style="color: white;">
+                      <a :href="item.url" target="_blank" style="color: white;">
                         <el-icon>
                           <ArrowRight/>
                         </el-icon>
@@ -48,14 +47,14 @@
                 </div>
               </div>
             </div>
-            <div style="font-size: 13px; color: #666" class="line3">{{ item.descr }}</div>
+            <div style="font-size: 13px; color: #666" class="line3">{{ item.description }}</div>
             <!--          <img :src="item.cover" alt="" style="width: 100%; height: 250px; border-radius: 5px">-->
             <!--          <div style="margin: 5px 0; font-size: 18px" class="line1">{{ item.name }}</div>-->
             <!--          <div style="margin: 5px 0; display: flex; align-items: center">-->
             <!--            <el-rate v-model="item.score" disabled allow-half show-score></el-rate>-->
             <!--            <div style="flex: 1; text-align: right; color: #1967e3">{{ item.commentNum }}人评论</div>-->
             <!--          </div>-->
-            <!--          <div style="font-size: 13px; color: #666" class="line3">{{ item.descr }}</div>-->
+            <!--          <div style="font-size: 13px; color: #666" class="line3">{{ item.description }}</div>-->
           </el-card>
         </el-col>
       </el-row>
@@ -89,7 +88,7 @@ const goDetail = (id) => {
 
 // 查询所有电影分类信息
 const loadCategory = () => {
-  request.get('/category/selectAll').then(res => {
+  request.get('/entity-ai-type/').then(res => {
     data.categoryList = res.data
   })
 }
@@ -102,17 +101,17 @@ const loadFilmByCategory = (categoryId) => {
 }
 
 const load = () => {
-  request.get('/film/selectPage', {
+  request.get('/entity-ai/', {
     params: {
-      pageNum: data.pageNum,
-      pageSize: data.pageSize,
+      // pageNum: data.pageNum,
+      // pageSize: data.pageSize,
       name: data.name,
-      categoryId: data.categoryId
+      type: data.categoryId
     }
   }).then(res => {
     console.log(res.data)
-    data.tableData = res.data.list
-    data.total = res.data.total
+    data.tableData = res.data
+    //data.total = res.data.total
   })
 }
 load()

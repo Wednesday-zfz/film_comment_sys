@@ -13,7 +13,7 @@
           </div>
 
           <div style="margin-bottom: 5px">
-            <el-rate v-model="data.AI.score" disabled allow-half show-score></el-rate>
+            <el-rate v-model="data.AI.average_score" disabled allow-half show-score></el-rate>
           </div>
 
           <div style="margin-bottom: 20px">
@@ -29,12 +29,12 @@
             <div style="display: flex; grid-gap: 20px; margin-bottom: 20px; flex: 1;">
               <img :src="data.AI.cover" alt="" style="width: 200px; height: 270px; border-radius: 5px">
               <div style="flex: 1; color: #666">
-                <div style="margin-bottom: 10px"><strong>分类：</strong>{{ data.AI.director }}</div>
-                <div style="margin-bottom: 10px"><strong>简介：</strong>{{ data.AI.descr }}</div>
+                <div style="margin-bottom: 10px"><strong>分类：</strong>{{ data.type.name }}</div>
+                <div style="margin-bottom: 10px"><strong>简介：</strong>{{ data.AI.description }}</div>
               </div>
             </div>
             <el-button type="primary" round style="position: absolute; left: 220px; bottom: 15px;">
-              <a href="https://element-plus.org" target="_blank" style="color: white;">
+              <a :href="data.AI.url" target="_blank" style="color: white;">
                 跳转链接
               </a>
               <el-icon>
@@ -177,6 +177,7 @@ import {Editor, Toolbar} from '@wangeditor/editor-for-vue'
 const data = reactive({
   id: router.currentRoute.value.query.id,
   AI: {},
+  type: {},
   recommendList: [],
   formVisible: false,
   form: {},
@@ -276,8 +277,9 @@ const loadLongComment = () => {
 }
 loadLongComment()
 
-request.get('/film/selectById/' + data.id).then(res => {
+request.get('/entity-ai/' + data.id).then(res => {
   data.AI = res.data
+  data.type = res.data.type
 })
 
 request.get('/film/selectRecommend/' + data.id).then(res => {

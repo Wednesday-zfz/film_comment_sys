@@ -1,30 +1,31 @@
 <template>
   <div>
     <div class="card" style="margin-bottom: 5px">
-      <el-input v-model="data.filmName" placeholder="请输入电影名称查询" style="width: 300px; margin-right: 10px"></el-input>
+      <el-input v-model="data.AIName" placeholder="请输入AI名字查询" style="width: 300px; margin-right: 10px"></el-input>
       <el-button type="primary" @click="load">查询</el-button>
       <el-button type="info" @click="reset">重置</el-button>
     </div>
     <div class="card" style="margin-bottom: 5px">
 
       <el-table :data="data.tableData" stripe>
-        <el-table-column prop="filmName" label="电影名称" />
-        <el-table-column prop="score" label="评分">
+        <el-table-column prop="entityAI.id" label="ID" width="50"/>
+        <el-table-column prop="entityAI.name" label="AI名称"/>
+        <el-table-column prop="score1" label="评分">
           <template #default="scope">
-            <el-rate disabled v-model="scope.row.score" allow-half />
+            <el-rate disabled v-model="scope.row.score1" allow-half/>
           </template>
         </el-table-column>
         <el-table-column prop="comment" label="评论">
           <template #default="scope">
-            <el-button @click="preview(scope.row.comment)">查看内容</el-button>
+            <el-button @click="preview(scope.row.content)">查看内容</el-button>
           </template>
         </el-table-column>
-        <el-table-column prop="userName" label="用户名称" />
-        <el-table-column prop="time" label="评论时间" />
+        <el-table-column prop="author.username" label="用户名称"/>
+        <el-table-column prop="created_time" label="评论时间"/>
         <el-table-column prop="type" label="类型">
           <template #default="scope">
-            <el-tag type="primary" v-if="scope.row.type === '短评'">短评</el-tag>
-            <el-tag type="success" v-if="scope.row.type === '长评'">长评</el-tag>
+            <el-tag type="primary" v-if="scope.row.type === 0">短评</el-tag>
+            <el-tag type="success" v-if="scope.row.type === 1">长评</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="100">
@@ -35,8 +36,9 @@
       </el-table>
     </div>
     <div class="card">
-      <el-pagination background layout="total, prev, pager, next" v-model:current-page="data.pageNum" v-model:page-size="data.pageSize"
-                     :total="data.total" @current-change="load" />
+      <el-pagination background layout="total, prev, pager, next" v-model:current-page="data.pageNum"
+                     v-model:page-size="data.pageSize"
+                     :total="data.total" @current-change="load"/>
     </div>
 
     <el-dialog v-model="data.formVisibleComment" title="评论内容" width="40%">
@@ -52,7 +54,7 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import {reactive} from "vue";
 import request from "@/utils/request";
 import {ElMessage, ElMessageBox} from "element-plus";
 
@@ -62,7 +64,7 @@ const data = reactive({
   total: 0,
   pageNum: 1,
   pageSize: 10,
-  filmName: null,
+  AIName: null,
   formVisible: false,
   form: {},
   formVisibleComment: false,
@@ -75,22 +77,24 @@ const preview = (comment) => {
 }
 
 const load = () => {
-  request.get('/comment/selectPage', {
+  request.get('/comment/', {
     params: {
-      pageNum: data.pageNum,
-      pageSize: data.pageSize,
-      filmName: data.filmName,
-      userId: data.user.role === 'ADMIN' ? null : data.user.id
+      // pageNum: data.pageNum,
+      // pageSize: data.pageSize,
+      // filmName: data.filmName,
+      // userId: data.user.role === 'ADMIN' ? null : data.user.id
     }
   }).then(res => {
-    data.tableData = res.data.list
-    data.total = res.data.total
+    data.tableData = data.AIName == null ? res.data : res.data.filter(row => {
+      return row.entityAI.name.includes(data.AIName)
+    })
+    // data.total = res.data.total
   })
 }
 load()
 
 const reset = () => {
-  data.filmName = null
+  data.AIName = null
   load()
 }
 
@@ -134,15 +138,14 @@ const save = () => {
 }
 
 const del = (id) => {
-  ElMessageBox.confirm('删除数据后无法恢复，您确认吗？', '确认删除', { type: 'warning' }).then(res => {
-    request.delete('/comment/delete/' + id).then(res => {
-      if (res.code === '200') {
-        load()
-        ElMessage.success('操作成功')
-      } else {
-        ElMessage.error(res.msg)
-      }
+  // console.log(id)
+  ElMessageBox.confirm('删除数据后无法恢复，您确认吗？', '确认删除', {type: 'warning'}).then(res => {
+    // console.log(id)
+    request.delete('/comment/' + id+ "/").then(res => {
+      load()
     })
-  }).catch(err => {})
+  }).catch(err => {
+    console.log(err)
+  })
 }
 </script>
