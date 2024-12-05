@@ -1,7 +1,6 @@
 package com.example.service;
 
-import cn.hutool.core.date.DateTime;
-import cn.hutool.core.date.DateUnit;
+import cn.hutool.core.date.DateUtil;
 import com.example.entity.Notice;
 import com.example.mapper.NoticeMapper;
 import com.github.pagehelper.PageHelper;
@@ -9,36 +8,48 @@ import com.github.pagehelper.PageInfo;
 import jakarta.annotation.Resource;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
 import java.util.List;
 
 @Service
 public class NoticeService {
+
     @Resource
     private NoticeMapper noticeMapper;
 
+    /**
+     * 新增
+     */
     public void add(Notice notice) {
-        notice.setTime(String.valueOf(DateTime.now())); // 获取当前时间
+        notice.setTime(DateUtil.now());  // 获取当前的最新的时间的字符串  设置到notice对象中去
         noticeMapper.insert(notice);
     }
 
     /**
+     * 更新
+     */
+    public void update(Notice notice) {
+        noticeMapper.updateById(notice);
+    }
+
+    /**
+     * 删除
+     */
+    public void deleteById(Integer id) {
+        noticeMapper.deleteById(id);
+    }
+
+    /**
      * 查询所有
-     *
-     * @return
      */
     public List<Notice> selectAll(Notice notice) {
-        List<Notice> list = noticeMapper.selectAll(notice);
-        return list;
+        return noticeMapper.selectAll(notice);
     }
 
     /**
      * 分页查询
-     *
-     * @param notice
-     * @param pageNum
-     * @param pageSize
-     * @return
+     * @param pageNum 当前的页码
+     * @param pageSize 每页的个数
+     * @return 分页的对象  包含数据和分页参数 total
      */
     public PageInfo<Notice> selectPage(Notice notice, Integer pageNum, Integer pageSize) {
         PageHelper.startPage(pageNum, pageSize);

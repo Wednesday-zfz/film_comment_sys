@@ -52,6 +52,17 @@ const save = () => {
         ElMessage.error(res.msg)
       }
     })
+  } else if (data.user.role === 'USER') {
+    request.put('/user/update', data.user).then(res => {
+      if (res.code === '200') {
+        ElMessage.success('更新成功')
+        //把更新后的用户信息存储到缓存
+        localStorage.setItem('system-user', JSON.stringify(data.user))
+        emit('updateUser')
+      } else {
+        ElMessage.error(res.msg)
+      }
+    })
   }
 }
 </script>

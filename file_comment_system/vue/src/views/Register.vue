@@ -87,7 +87,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: linear-gradient(to bottom, #a8c0ff, #3f2b96);
+  background-image: url("@/assets/imgs/bg.jpg");
   background-size: cover;
 }
 .login-box {
