@@ -94,7 +94,7 @@ import router from "@/router";
 import {ElMessage} from "element-plus";
 
 const data = reactive({
-  user: JSON.parse(localStorage.getItem('system-user') || '{}')
+  user: JSON.parse(localStorage.getItem('user') || '{}')
 })
 
 if (!data.user?.id) {
@@ -103,12 +103,12 @@ if (!data.user?.id) {
 }
 
 const updateUser = () => {
-  data.user = JSON.parse(localStorage.getItem('system-user') || '{}')
+  data.user = JSON.parse(localStorage.getItem('user') || '{}')
 }
 
 const logout = () => {
   ElMessage.success('退出成功')
-  localStorage.removeItem('system-user')
+  localStorage.removeItem('user')
   router.push('/login')
 }
 </script>

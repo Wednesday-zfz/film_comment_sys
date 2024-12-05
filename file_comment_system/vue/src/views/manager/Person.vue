@@ -31,7 +31,7 @@ import {ElMessage} from "element-plus";
 const uploadUrl = import.meta.env.VITE_BASE_URL + '/files/upload'
 
 const data = reactive({
-  user: JSON.parse(localStorage.getItem('system-user') || '{}'),
+  user: JSON.parse(localStorage.getItem('user') || '{}'),
 })
 
 const handleFileUpload = (file) => {
@@ -46,7 +46,7 @@ const save = () => {
       if (res.code === '200') {
         ElMessage.success('更新成功')
         //把更新后的用户信息存储到缓存
-        localStorage.setItem('system-user', JSON.stringify(data.user))
+        localStorage.setItem('user', JSON.stringify(data.user))
         emit('updateUser')
       } else {
         ElMessage.error(res.msg)
@@ -57,7 +57,7 @@ const save = () => {
       if (res.code === '200') {
         ElMessage.success('更新成功')
         //把更新后的用户信息存储到缓存
-        localStorage.setItem('system-user', JSON.stringify(data.user))
+        localStorage.setItem('user', JSON.stringify(data.user))
         emit('updateUser')
       } else {
         ElMessage.error(res.msg)

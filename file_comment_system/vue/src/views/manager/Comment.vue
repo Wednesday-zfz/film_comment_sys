@@ -57,7 +57,7 @@ import request from "@/utils/request";
 import {ElMessage, ElMessageBox} from "element-plus";
 
 const data = reactive({
-  user: JSON.parse(localStorage.getItem('system-user') || '{}'),
+  user: JSON.parse(localStorage.getItem('user') || '{}'),
   tableData: [],
   total: 0,
   pageNum: 1,

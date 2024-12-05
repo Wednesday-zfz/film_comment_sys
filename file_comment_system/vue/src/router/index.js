@@ -10,7 +10,7 @@ const router = createRouter({
       children: [
         { path: 'person', component: () => import('@/views/manager/Person.vue')},
         { path: 'password', component: () => import('@/views/manager/Password.vue')},
-        { path: 'home', component: () => import('@/views/manager/Home.vue')},
+        { path: 'home', name: 'home', component: () => import('@/views/manager/Home.vue')},
         { path: 'admin', component: () => import('@/views/manager/Admin.vue')},
         { path: 'notice', component: () => import('@/views/manager/Notice.vue')},
         { path: 'category', component: () => import('@/views/manager/Category.vue')},
@@ -21,8 +21,8 @@ const router = createRouter({
         { path: 'AIDetail', component: () => import('@/views/manager/AIDetail.vue')},
       ]
     },
-    { path: '/login', component: () => import('@/views/Login.vue')},
-    { path: '/register', component: () => import('@/views/Register.vue')},
+    { path: '/login', name: 'login', component: () => import('@/views/Login.vue')},
+    { path: '/register', name: 'register', component: () => import('@/views/Register.vue')},
   ]
 })
 

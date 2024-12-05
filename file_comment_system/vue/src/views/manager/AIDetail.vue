@@ -184,7 +184,7 @@ const data = reactive({
   pageSizeShort: 3,
   totalShort: 0,
   commentShortList: [],
-  user: JSON.parse(localStorage.getItem('system-user') || '{}'),
+  user: JSON.parse(localStorage.getItem('user') || '{}'),
   pageNumLong: 1,
   pageSizeLong: 3,
   totalLong: 0,
