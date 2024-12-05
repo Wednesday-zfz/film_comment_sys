@@ -27,13 +27,13 @@
           <div style="position: relative;">
             <!-- 图片和电影信息模块 -->
             <div style="display: flex; grid-gap: 20px; margin-bottom: 20px; flex: 1;">
-              <img :src="data.AI.cover" alt="" style="width: 200px; height: 270px; border-radius: 5px">
+              <img :src="data.AI.cover" alt="" style="width: 480px; height: 270px; border-radius: 5px">
               <div style="flex: 1; color: #666">
                 <div style="margin-bottom: 10px"><strong>分类：</strong>{{ data.type.name }}</div>
                 <div style="margin-bottom: 10px"><strong>简介：</strong>{{ data.AI.description }}</div>
               </div>
             </div>
-            <el-button type="primary" round style="position: absolute; left: 220px; bottom: 15px;">
+            <el-button type="primary" round style="position: absolute; left: 500px; bottom: 15px;">
               <a :href="data.AI.url" target="_blank" style="color: white;">
                 跳转链接
               </a>

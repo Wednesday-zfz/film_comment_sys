@@ -3,8 +3,8 @@
     <div style="height: 60px; background-color: #fff; display: flex; align-items: center; border-bottom: 1px solid #ddd">
       <div style="flex: 1">
         <div style="padding-left: 20px; display: flex; align-items: center">
-          <img src="@/assets/imgs/logo.png" alt="" style="width: 40px">
-          <div style="font-weight: bold; font-size: 24px; margin-left: 5px; color: #7f7fd5">AI评论系统</div>
+          <img src="Ai.svg" alt="" style="width: 40px">
+          <div style="font-weight: bold; font-size: 24px; margin-left: 5px; color: #f6b502 ">AI评论系统</div>
         </div>
       </div>
       <div style="width: fit-content; padding-right: 10px; display: flex; align-items: center;">
@@ -33,7 +33,7 @@
             <el-icon><Comment /></el-icon>
             <span>AI评论</span>
           </el-menu-item>
-          <el-sub-menu index="1" v-if="data.user.role === 'ADMIN'">
+          <el-sub-menu index="1" v-if="data.user.role === 'admin'">
             <template #title>
               <el-icon><Menu /></el-icon>
               <span>信息管理</span>
@@ -49,20 +49,6 @@
             <el-menu-item index="/notice">
               <el-icon><Bell /></el-icon>
               <span>公告信息</span>
-            </el-menu-item>
-          </el-sub-menu>
-          <el-sub-menu index="2" v-if="data.user.role === 'ADMIN'">
-            <template #title>
-              <el-icon><Memo /></el-icon>
-              <span>用户管理</span>
-            </template>
-            <el-menu-item index="/admin">
-              <el-icon><User /></el-icon>
-              <span>管理员信息</span>
-            </el-menu-item>
-            <el-menu-item index="/user">
-              <el-icon><User /></el-icon>
-              <span>普通用户信息</span>
             </el-menu-item>
           </el-sub-menu>
           <el-menu-item index="/person">

@@ -53,7 +53,7 @@ export default {
         const res = await request.get(
             '/phone-code/',
             {
-              params: { phone: phone },
+              params: {phone: phone},
             }
         );
         if (res.status === "success") {
@@ -65,7 +65,7 @@ export default {
         console.log(error);
         ElMessage.error(error.response.data.message || "发送验证码失败");
         if (error.response.data.errors) {
-            ElMessage.error(error.response.data.errors);
+          ElMessage.error(error.response.data.errors);
         }
       }
     },
@@ -176,13 +176,12 @@ export default {
 
       this.$router.push({name: 'home'});
 
-    },
+    }
+  },
 
-
-    mounted() {
-      this.loadInputFocusHooks();
-    },
-  }
+  mounted() {
+    this.loadInputFocusHooks();
+  },
 }
 </script>
 
