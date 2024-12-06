@@ -41,7 +41,7 @@
   </div>
   <div v-if="isRedirecting" class="loading-overlay">
     <div class="loading-content">
-      <img src="Ai.svg" class="ai-logo" alt="小鸟">
+      <img src="/Ai.svg" class="ai-logo" alt="小鸟">
       <div class="loading-text">正在跳转...</div>
     </div>
   </div>

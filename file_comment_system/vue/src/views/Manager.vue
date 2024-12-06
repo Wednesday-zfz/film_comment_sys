@@ -1,14 +1,16 @@
 <template>
   <div>
-    <div style="height: 60px; background-color: #fff; display: flex; align-items: center; border-bottom: 1px solid #ddd">
+    <div
+        style="height: 60px; background-color: #fff; display: flex; align-items: center; border-bottom: 1px solid #ddd">
       <div style="flex: 1">
         <div style="padding-left: 20px; display: flex; align-items: center">
-          <img src="Ai.svg" alt="" style="width: 40px">
+          <img src="/Ai.svg" alt="" style="width: 40px">
           <div style="font-weight: bold; font-size: 24px; margin-left: 5px; color: #f6b502 ">AI评论系统</div>
         </div>
       </div>
       <div style="width: fit-content; padding-right: 10px; display: flex; align-items: center;">
-        <img style="width: 40px; height: 40px; border-radius: 50%" :src="data.user.avatar || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'" alt="">
+        <img style="width: 40px; height: 40px; border-radius: 50%"
+             :src="data.user.avatar || 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'" alt="">
         <span style="margin-left: 5px">{{ data.user.name }}</span>
       </div>
     </div>
@@ -22,44 +24,66 @@
             :default-openeds="['1', '2']"
         >
           <el-menu-item index="/home">
-            <el-icon><HomeFilled /></el-icon>
+            <el-icon>
+              <HomeFilled/>
+            </el-icon>
             <span>系统首页</span>
           </el-menu-item>
           <el-menu-item index="/AIView">
-            <el-icon><Film /></el-icon>
+            <el-icon>
+              <Cpu/>
+            </el-icon>
             <span>AI列表</span>
           </el-menu-item>
+          <el-menu-item index="/Histogram">
+            <el-icon>
+              <Histogram />
+            </el-icon>
+            <span>统计分析</span>
+          </el-menu-item>
           <el-menu-item index="/comment">
-            <el-icon><Comment /></el-icon>
+            <el-icon>
+              <Comment/>
+            </el-icon>
             <span>AI评论</span>
           </el-menu-item>
           <el-sub-menu index="1" v-if="data.user.role === 'admin'">
             <template #title>
-              <el-icon><Menu /></el-icon>
+              <el-icon>
+                <Menu/>
+              </el-icon>
               <span>信息管理</span>
             </template>
             <el-menu-item index="/category">
-              <el-icon><Grid /></el-icon>
+              <el-icon>
+                <Grid/>
+              </el-icon>
               <span>AI分类信息</span>
             </el-menu-item>
             <el-menu-item index="/AI">
-              <el-icon><Film /></el-icon>
+              <el-icon>
+                <Film/>
+              </el-icon>
               <span>AI信息</span>
             </el-menu-item>
             <el-menu-item index="/notice">
-              <el-icon><Bell /></el-icon>
+              <el-icon>
+                <Bell/>
+              </el-icon>
               <span>公告信息</span>
             </el-menu-item>
           </el-sub-menu>
           <el-menu-item index="/person">
-            <el-icon><User /></el-icon>
+            <el-icon>
+              <User/>
+            </el-icon>
             <span>个人资料</span>
           </el-menu-item>
         </el-menu>
       </div>
 
       <div style="flex: 1; width: 0; background-color: #f8f8ff; padding: 10px">
-        <router-view @update-user="updateUser" />
+        <router-view @update-user="updateUser"/>
       </div>
     </div>
 
@@ -67,7 +91,7 @@
 </template>
 
 <script setup>
-import { reactive, watchEffect } from "vue";
+import {reactive, watchEffect} from "vue";
 import router from "@/router";
 import {ElMessage} from "element-plus";
 
@@ -99,10 +123,12 @@ defineExpose({
 .el-menu-item.is-active {
   background-color: #e0edfd !important;
 }
+
 .el-menu-item:hover {
   color: #1967e3;
 }
-:deep(th)  {
+
+:deep(th) {
   color: #333;
 }
 </style>

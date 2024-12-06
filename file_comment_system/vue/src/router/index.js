@@ -19,6 +19,7 @@ const router = createRouter({
         { path: 'user', component: () => import('@/views/manager/User.vue')},
         { path: 'AIView', component: () => import('@/views/manager/AIView.vue')},
         { path: 'AIDetail', component: () => import('@/views/manager/AIDetail.vue')},
+        { path: 'Histogram', component: () => import('@/views/manager/Histogram.vue')},
       ]
     },
     { path: '/login', name: 'login', component: () => import('@/views/Login.vue')},

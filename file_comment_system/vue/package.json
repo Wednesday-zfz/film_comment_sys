@@ -9,10 +9,12 @@
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.1.0",
+    "@fortawesome/fontawesome-free": "^6.7.1",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "^5.1.12",
     "animejs": "^3.2.2",
     "axios": "^1.6.2",
+    "echarts": "^5.5.1",
     "element-plus": "^2.4.2",
     "sass": "^1.69.5",
     "unplugin-element-plus": "^0.8.0",
