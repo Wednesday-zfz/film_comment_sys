@@ -12,7 +12,7 @@
           <!--            <div style="font-size: 18px; color: #333" v-else>{{ index + 1 }}</div>-->
         </div>
         <div style="display: flex; grid-gap: 10px">
-          <img :src="item.entity.cover" alt="" style="width: 100px; height: 100px; border-radius: 5px">
+          <img :src="item.entity.logo" alt="" style="width: 100px; height: 100px; border-radius: 5px">
           <div style="flex: 1">
             <div style="font-size: 16px; margin-bottom: 10px">{{ item.entity.name }}</div>
             <div style="color: #666; margin-bottom: 4px" class="line2">{{ item.entity.description }}</div>

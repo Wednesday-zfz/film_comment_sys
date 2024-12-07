@@ -10,10 +10,10 @@
 
       <el-table :data="data.tableData" stripe>
         <el-table-column prop="name" width="100" label="名称"/>
-        <el-table-column prop="cover" width="100" label="logo">
+        <el-table-column prop="logo" width="100" label="logo">
           <template #default="scope">
-            <el-image :src="scope.row.cover" style="width: 40px; height: 40px; border-radius: 5px"
-                      :preview-src-list="[scope.row.cover]" preview-teleported></el-image>
+            <el-image :src="scope.row.logo" style="width: 40px; height: 40px; border-radius: 5px"
+                      :preview-src-list="[scope.row.logo]" preview-teleported></el-image>
           </template>
         </el-table-column>
         <el-table-column prop="type.name" width="100" label="分类"/>

@@ -23,6 +23,7 @@
         </el-col>
       </el-row>
     </div>
+
     <div class="editUserInfo">
       <el-button @click="showEditModal = true" class="userBtn" type="primary">编辑用户信息</el-button>
       <EditUserInfoModal
@@ -38,7 +39,64 @@
           @update:showModal="showChangePasswordModal = $event"
       />
     </div>
+
+    <h3 class="title">我的收藏</h3>
+
+    <div class="card" style="margin-bottom: 5px; margin-top: 10px">
+      <el-row :gutter="10">
+        <el-col :span="6" v-for="item in data.tableData" :key="item.id"
+                style="margin-bottom: 20px; cursor: pointer;">
+          <el-card
+              :body-style="{ padding: '10px' }"
+              class="card-item"
+              hoverable
+              style="cursor: pointer;"
+          >
+            <div style="margin: 5px 0; font-size: 18px" class="line1">{{ item.name }}</div>
+
+            <div style="position: relative;margin-bottom: 10px">
+              <div style="display: flex; grid-gap: 10px; flex: 1;">
+                <el-tooltip class="item" effect="dark" content="详情页面" placement="bottom">
+                  <img :src="item.logo" alt="" style="width: 100px; height: 100px; border-radius: 5px"
+                       @click="goDetail(item.id)">
+                </el-tooltip>
+                <div style="flex: 1">
+                  <el-rate v-model="item.average_score" disabled allow-half show-score
+                           style="margin-bottom: 5px"></el-rate>
+                  <div style="text-align: left; color: #1967e3;margin-bottom: 20px;">{{ item.like_count }}人收藏</div>
+                  <el-tooltip class="item" effect="dark" content="跳转链接" placement="bottom">
+                    <el-button type="primary" circle size="small">
+                      <a :href="item.url" target="_blank" style="color: white;">
+                        <el-icon>
+                          <ArrowRight/>
+                        </el-icon>
+                      </a>
+                    </el-button>
+                  </el-tooltip>
+                </div>
+              </div>
+            </div>
+            <div style="font-size: 13px; height: 54px; color: #666" class="line3">{{ item.description }}</div>
+            <!--          <img :src="item.cover" alt="" style="width: 100%; height: 250px; border-radius: 5px">-->
+            <!--          <div style="margin: 5px 0; font-size: 18px" class="line1">{{ item.name }}</div>-->
+            <!--          <div style="margin: 5px 0; display: flex; align-items: center">-->
+            <!--            <el-rate v-model="item.score" disabled allow-half show-score></el-rate>-->
+            <!--            <div style="flex: 1; text-align: right; color: #1967e3">{{ item.commentNum }}人评论</div>-->
+            <!--          </div>-->
+            <!--          <div style="font-size: 13px; color: #666" class="line3">{{ item.description }}</div>-->
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+
+    <div class="card">
+      <el-pagination background layout="total, prev, pager, next" v-model:current-page="data.pageNum"
+                     v-model:page-size="data.pageSize"
+                     :total="data.total" @current-change="load"/>
+    </div>
+
   </div>
+
   <div v-if="isRedirecting" class="loading-overlay">
     <div class="loading-content">
       <img src="/Ai.svg" class="ai-logo" alt="小鸟">
@@ -48,11 +106,40 @@
 </template>
 
 <script setup>
-import {onMounted, ref} from "vue";
+import {onMounted, reactive, ref} from "vue";
 import EditUserInfoModal from '@/components/EditUserInfoModal.vue';
 import ChangePasswordModal from '@/components/ChangePasswordModal.vue';
 import request from "@/utils/request";
 import {ElMessageBox} from "element-plus";
+
+const data = reactive({
+  name: null,
+  pageNum: 1,
+  pageSize: 4,
+  tableData: [],
+  total: 0,
+  sortType: "pinyin_name"
+})
+
+const load = () => {
+  request.get('/entity-ai/', {
+    params: {
+      page: data.pageNum,
+      page_size: data.pageSize,
+      // name: data.name,
+      ordering: data.sortType,
+      liked_by_user: true
+    }
+  }).then(res => {
+    console.log(data.name)
+    data.tableData = res.data.results.filter(res => {
+      return data.name == null || res.name.includes(data.name)
+    })
+    data.total = res.data.count;
+  })
+}
+load()
+
 
 // 加载用户信息
 const userInfo = ref(null);
@@ -213,5 +300,14 @@ h3 {
   font-size: 24px;
   color: #333;
 }
+
+.title {
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: bold;
+}
+
 
 </style>

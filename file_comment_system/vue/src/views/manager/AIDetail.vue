@@ -15,13 +15,15 @@
           <div style="margin-bottom: 5px">
             <el-rate v-model="data.AI.average_score" disabled allow-half show-score></el-rate>
           </div>
-
           <div style="margin-bottom: 20px">
-            <el-tag type="primary" style="margin-right: 8px;">Tag 1</el-tag>
-            <el-tag type="success" style="margin-right: 8px;">Tag 2</el-tag>
-            <el-tag type="info" style="margin-right: 8px;">Tag 3</el-tag>
-            <el-tag type="warning" style="margin-right: 8px;">Tag 4</el-tag>
-            <el-tag type="danger" style="margin-right: 8px;">Tag 5</el-tag>
+            <el-tag
+                v-for="(tag, index) in data.AI.entityAI_tags"
+                :key="tag.id"
+                :type="tagType[index]"
+                style="margin-right: 8px;"
+            >
+              {{ tag.name }}
+            </el-tag>
           </div>
 
           <div style="position: relative;">
@@ -291,11 +293,20 @@ const loadLongComment = () => {
 }
 loadLongComment()
 
+const tagType = ["primary", "success", "warning", "danger", "info"]
+
 const load = () => {
   request.get('/entity-ai/' + data.id).then(res => {
     data.AI = res.data
     data.type = res.data.type
     data.isStared = res.data.is_liked
+
+    // 处理 entityAI_tags
+    const tags = res.data.entityAI_tags.slice(0, 5); // 取前五个标签
+    while (tags.length < 5) { // 如果不足五个，用 "广告招租" 补齐
+      tags.push({id: `placeholder-${tags.length}`, name: '广告招租'});
+    }
+    data.AI.entityAI_tags = tags;
   })
 }
 load()
