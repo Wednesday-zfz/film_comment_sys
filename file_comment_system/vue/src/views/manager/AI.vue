@@ -9,22 +9,24 @@
       <el-button type="primary" style="margin-bottom: 10px" @click="handleAdd">新增</el-button>
 
       <el-table :data="data.tableData" stripe>
-        <el-table-column prop="name" label="名称" />
-        <el-table-column prop="cover" label="封面">
+        <el-table-column prop="name" width="100" label="名称"/>
+        <el-table-column prop="cover" width="100" label="logo">
           <template #default="scope">
-            <el-image :src="scope.row.cover" style="width: 40px; height: 40px; border-radius: 5px" :preview-src-list="[scope.row.cover]" preview-teleported></el-image>
+            <el-image :src="scope.row.cover" style="width: 40px; height: 40px; border-radius: 5px"
+                      :preview-src-list="[scope.row.cover]" preview-teleported></el-image>
           </template>
         </el-table-column>
-        <el-table-column prop="descr" label="描述" show-overflow-tooltip />
-        <el-table-column prop="year" label="年份" />
-        <el-table-column prop="director" label="导演" />
-        <el-table-column prop="actors" label="演员" show-overflow-tooltip />
-        <el-table-column prop="categoryName" label="分类" />
-        <el-table-column prop="country" label="国家" />
-        <el-table-column prop="language" label="语言" />
-        <el-table-column prop="date" label="上映日期" />
-        <el-table-column prop="duration" label="片长" />
-        <el-table-column prop="imdb" label="IMDb" />
+        <el-table-column prop="type.name" width="100" label="分类"/>
+        <el-table-column prop="like_count" width="100" label="收藏量" align="center"/>
+        <el-table-column prop="description" label="描述" show-overflow-tooltip/>
+        <!--        <el-table-column prop="director" label="导演" />-->
+        <!--        <el-table-column prop="actors" label="演员" show-overflow-tooltip />-->
+
+        <!--        <el-table-column prop="country" label="国家" />-->
+        <!--        <el-table-column prop="language" label="语言" />-->
+        <!--        <el-table-column prop="date" label="上映日期" />-->
+        <!--        <el-table-column prop="duration" label="片长" />-->
+        <!--        <el-table-column prop="imdb" label="IMDb" />-->
         <el-table-column label="操作" width="160">
           <template #default="scope">
             <el-button type="primary" @click="handleEdit(scope.row)">编辑</el-button>
@@ -34,49 +36,49 @@
       </el-table>
     </div>
     <div class="card">
-      <el-pagination background layout="total, prev, pager, next" v-model:current-page="data.pageNum" v-model:page-size="data.pageSize"
-                     :total="data.total" @current-change="load" />
+      <el-pagination background layout="total, prev, pager, next" v-model:current-page="data.pageNum"
+                     v-model:page-size="data.pageSize"
+                     :total="data.total" @current-change="load"/>
     </div>
 
-    <el-dialog v-model="data.formVisible" title="电影信息" width="40%">
+    <el-dialog v-model="data.formVisible" title="AI信息" width="40%">
       <el-form :model="data.form" label-width="80px" style="padding-right: 20px">
         <el-form-item label="名称">
-          <el-input v-model="data.form.name" autocomplete="off" placeholder="请输入名称" />
+          <el-input v-model="data.form.name" autocomplete="off" placeholder="请输入名称"/>
         </el-form-item>
-        <el-form-item label="封面" prop="cover">
-          <el-upload :action="uploadUrl" list-type="picture" :on-success="handleImgSuccess">
-            <el-button type="primary">上传图片</el-button>
+        <el-form-item label="logo" prop="logo">
+          <el-upload :action="uploadUrl" list-type="picture" :on-change="handleLogo">
+            <el-button type="primary">上传logo</el-button>
           </el-upload>
         </el-form-item>
-        <el-form-item label="描述">
-          <el-input :rows="5" type="textarea" v-model="data.form.descr" autocomplete="off" placeholder="请输入描述" />
-        </el-form-item>
-        <el-form-item label="年份">
-          <el-input v-model="data.form.year" autocomplete="off" placeholder="请输入年份" />
-        </el-form-item>
-        <el-form-item label="导演">
-          <el-input v-model="data.form.director" autocomplete="off" placeholder="请输入导演" />
-        </el-form-item>
-        <el-form-item label="演员">
-          <el-input :rows="4" type="textarea" v-model="data.form.actors" autocomplete="off" placeholder="请输入演员" />
+        <el-form-item label="封面" prop="cover">
+          <el-upload list-type="picture" :on-change="handleImg">
+            <el-button type="primary">上传封面</el-button>
+          </el-upload>
         </el-form-item>
         <el-form-item label="分类">
-          <el-input v-model="data.form.categoryId" autocomplete="off" placeholder="请输入分类" />
+          <el-dropdown split-button type="primary">
+            <div v-if="!data.newTypeName">选择分类</div>
+            <div v-else>{{ data.newTypeName }}</div>
+            <template #dropdown>
+              <el-dropdown-menu>
+                <el-dropdown-item
+                    v-for="(item, index) in data.AITypeList"
+                    :key="index"
+                    @click="handleDropdownItemClick(item)"
+                >
+                  {{ item.name }}
+                </el-dropdown-item>
+              </el-dropdown-menu>
+            </template>
+          </el-dropdown>
         </el-form-item>
-        <el-form-item label="国家">
-          <el-input v-model="data.form.country" autocomplete="off" placeholder="请输入国家" />
+        <el-form-item label="跳转链接">
+          <el-input v-model="data.form.url" autocomplete="off" placeholder="请输入跳转链接"/>
         </el-form-item>
-        <el-form-item label="语言">
-          <el-input v-model="data.form.language" autocomplete="off" placeholder="请输入语言" />
-        </el-form-item>
-        <el-form-item label="上映日期">
-          <el-date-picker style="width: 100%" type="date" v-model="data.form.date" placeholder="请选择上映日期" format="YYYY-MM-DD" value-format="YYYY-MM-DD"></el-date-picker>
-        </el-form-item>
-        <el-form-item label="片长">
-          <el-input v-model="data.form.duration" autocomplete="off" placeholder="请输入片长" />
-        </el-form-item>
-        <el-form-item label="IMDb">
-          <el-input v-model="data.form.imdb" autocomplete="off" placeholder="请输入IMDb" />
+        <el-form-item label="描述">
+          <el-input :rows="5" type="textarea" v-model="data.form.description" autocomplete="off"
+                    placeholder="请输入描述"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -91,12 +93,12 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import {reactive} from "vue";
 import request from "@/utils/request";
 import {ElMessage, ElMessageBox} from "element-plus";
 
 // 文件上传的接口地址
-const uploadUrl = import.meta.env.VITE_BASE_URL + '/files/upload'
+const uploadUrl = import.meta.env.VITE_BASE_URL + '/entity-ai/'
 
 const data = reactive({
   tableData: [],
@@ -105,19 +107,23 @@ const data = reactive({
   pageSize: 10,
   name: null,
   formVisible: false,
-  form: {}
+  form: {},
+  AITypeList: [],
+  newTypeName: null,
+  newCover: null,
+  newLogo: null,
 })
 
 const load = () => {
-  request.get('/film/selectPage', {
+  request.get('/entity-ai/', {
     params: {
-      pageNum: data.pageNum,
-      pageSize: data.pageSize,
-      name: data.name
+      page: data.pageNum,
+      page_size: data.pageSize,
+      //name: data.name
     }
   }).then(res => {
-    data.tableData = res.data.list
-    data.total = res.data.total
+    data.tableData = res.data.results
+    data.total = res.data.count
   })
 }
 load()
@@ -130,12 +136,16 @@ const reset = () => {
 // 初始化新增的数据
 const handleAdd = () => {
   data.form = {}
+  data.newCover = null
+  data.newLogo = null
+  data.newTypeName = null
   data.formVisible = true
 }
 
 const add = () => {
-  request.post('/film/add', data.form).then(res => {
-    if (res.code === '200') {
+  request.post('/entity-ai/', data.form).then(res => {
+    if (res.status === 'success') {
+      console.log(data.form)
       load()
       data.formVisible = false
       ElMessage.success('操作成功')
@@ -147,12 +157,14 @@ const add = () => {
 
 // 编辑按钮触发
 const handleEdit = (row) => {
+
   data.form = JSON.parse(JSON.stringify(row))  // 给表单赋值当前的行对象的数据  深度拷贝
   data.formVisible = true
+  // console.log(data.form)
 }
 const update = () => {
-  request.put('/film/update', data.form).then(res => {
-    if (res.code === '200') {
+  request.patch('/entity-ai/' + data.form.id + '/', data.form).then(res => {
+    if (res.status === 'success') {
       load()
       data.formVisible = false
       ElMessage.success('操作成功')
@@ -167,20 +179,35 @@ const save = () => {
 }
 
 const del = (id) => {
-  ElMessageBox.confirm('删除数据后无法恢复，您确认吗？', '确认删除', { type: 'warning' }).then(res => {
-    request.delete('/film/delete/' + id).then(res => {
-      if (res.code === '200') {
+  ElMessageBox.confirm('删除数据后无法恢复，您确认吗？', '确认删除', {type: 'warning'}).then(res => {
+    request.delete('/entity-ai/' + data.form.id + '/').then(res => {
+      if (res.status === 'success') {
         load()
         ElMessage.success('操作成功')
       } else {
         ElMessage.error(res.msg)
       }
     })
-  }).catch(err => {})
+  }).catch(err => {
+    ElMessage.error(err.msg)
+  })
 }
 
-// 处理文件上传的钩子
-const handleImgSuccess = (res) => {
-  data.form.cover = res.data  // res.data就是文件上传返回的文件路径，获取到路径后赋值表单的属性
+const handleImg = (res) => {
+  data.newCover = res.data  // res.data就是文件上传返回的文件路径，获取到路径后赋值表单的属性
+}
+
+const handleLogo = (file) => {
+  data.newLogo = file  // res.data就是文件上传返回的文件路径，获取到路径后赋值表单的属性
+  data.prevNewLogo = URL.createObjectURL(file.raw)
+}
+
+//获取TypeList
+request.get('/entity-ai-type/').then(res => {
+  data.AITypeList = res.data
+})
+const handleDropdownItemClick = (res) => {
+  data.form.type_id = res.id
+  data.newTypeName = res.name
 }
 </script>

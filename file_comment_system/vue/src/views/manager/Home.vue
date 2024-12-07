@@ -2,20 +2,22 @@
   <div style="display: flex; grid-gap: 10px">
     <div class="card" style="width: 50%; padding: 20px">
       <div style="margin-bottom: 20px; font-size: 20px; font-weight: bold">电影评分榜</div>
-      <div v-for="(item, index) in data.filmList" :key="item.id" @click="goDetail(item.id)" style="cursor: pointer; margin-bottom: 10px">
+      <div v-for="(item, index) in data.AIList" :key="item.id" @click="goDetail(item.entity.id)"
+           style="cursor: pointer; margin-bottom: 10px">
+        <!--        <div style="display: flex; grid-gap: 10px">-->
+        <div style="padding-top: 10px; padding-bottom: 20px;">
+          <div style="font-weight: bold; font-size: 18px; color: gold">{{ item.title }}</div>
+          <!--            <div style="font-weight: bold; font-size: 18px; color: silver" v-else-if="index === 1">2</div>-->
+          <!--            <div style="font-weight: bold; font-size: 18px; color: chocolate" v-else-if="index === 2">3</div>-->
+          <!--            <div style="font-size: 18px; color: #333" v-else>{{ index + 1 }}</div>-->
+        </div>
         <div style="display: flex; grid-gap: 10px">
-          <div style="padding-top: 10px">
-            <div style="font-weight: bold; font-size: 18px; color: gold" v-if="index === 0">1</div>
-            <div style="font-weight: bold; font-size: 18px; color: silver" v-else-if="index === 1">2</div>
-            <div style="font-weight: bold; font-size: 18px; color: chocolate" v-else-if="index === 2">3</div>
-            <div style="font-size: 18px; color: #333" v-else>{{ index + 1 }}</div>
-          </div>
-          <img :src="item.cover" alt="" style="width: 100px">
+          <img :src="item.entity.cover" alt="" style="width: 150px">
           <div style="flex: 1">
-            <div style="font-size: 20px; margin-bottom: 10px">{{ item.name }}</div>
-            <div style="color: #666; margin-bottom: 10px" class="line3">{{ item.descr }}</div>
+            <div style="font-size: 20px; margin-bottom: 10px">{{ item.entity.name }}</div>
+            <div style="color: #666; margin-bottom: 10px" class="line3">{{ item.entity.description }}</div>
             <div>
-              <el-rate v-model="item.score" allow-half show-score disabled></el-rate>
+              <el-rate v-model="item.entity.average_score" allow-half show-score disabled></el-rate>
             </div>
           </div>
         </div>
@@ -38,24 +40,24 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import {reactive} from "vue";
 import request from "@/utils/request";
 
 const data = reactive({
   user: JSON.parse(localStorage.getItem('user') || '{}'),
   noticeList: [],
-  filmList: []
+  AIList: []
 })
 
 const goDetail = (id) => {
-  location.href = '/filmDetail?id=' + id
+  location.href = '/AIDetail?id=' + id
 }
 
-request.get('/notice/selectAll').then(res => {
+request.get('/notice/').then(res => {
   data.noticeList = res.data
 })
 
-request.get('/film/selectRanking').then(res => {
-  data.filmList = res.data
+request.get('/recommend/').then(res => {
+  data.AIList = res.data
 })
 </script>

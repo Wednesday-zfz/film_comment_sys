@@ -34,7 +34,7 @@
                 </el-tooltip>
                 <div style="flex: 1">
                   <el-rate v-model="item.average_score" disabled allow-half show-score style="margin-bottom: 5px"></el-rate>
-                  <div style="text-align: left; color: #1967e3;margin-bottom: 20px;">{{ item.commentNum }}人评论</div>
+                  <div style="text-align: left; color: #1967e3;margin-bottom: 20px;">{{ item.like_count }}人收藏</div>
                   <el-tooltip class="item" effect="dark" content="跳转链接" placement="bottom">
                     <el-button type="primary" circle size="small">
                       <a :href="item.url" target="_blank" style="color: white;">

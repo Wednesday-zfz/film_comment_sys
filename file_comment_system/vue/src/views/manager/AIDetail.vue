@@ -7,8 +7,8 @@
           <div style="display: flex; align-items: center;">
             <div style="font-weight: bold; font-size: 18px; flex: 1">{{ data.AI.name }}</div>
             <div>
-              <el-button type="primary" plain @click="addComment('短评')">写短评</el-button>
-              <el-button type="success" plain @click="addComment('长评')">写长评</el-button>
+              <el-button type="primary" plain @click="addComment(0)">写短评</el-button>
+              <el-button type="success" plain @click="addComment(1)">写长评</el-button>
             </div>
           </div>
 
@@ -51,8 +51,8 @@
             </el-icon>
           </div>
 
-<!--          <div style="font-size: 20px; color: #1967e3; margin-bottom: 10px">{{ data.AI.name }} 的剧情简介</div>-->
-<!--          <div style="color: #666; line-height: 24px; text-align: justify">{{ data.AI.descr }}</div>-->
+          <!--          <div style="font-size: 20px; color: #1967e3; margin-bottom: 10px">{{ data.AI.name }} 的剧情简介</div>-->
+          <!--          <div style="color: #666; line-height: 24px; text-align: justify">{{ data.AI.descr }}</div>-->
         </div>
 
         <div class="card" style="padding: 20px; margin-bottom: 10px">
@@ -61,11 +61,11 @@
           <div style="border-bottom: 1px solid #eee; padding: 20px 0" v-for="item in data.commentShortList"
                :key="item.id">
             <div style="display: flex; align-items: center; margin-bottom: 5px">
-              <span>{{ item.userName }}</span>
-              <el-rate style="margin: 0 10px" v-model="item.score" disabled allow-half></el-rate>
-              <span style="color: #666">{{ item.time }}</span>
+              <span>{{ item.author.username }}</span>
+              <el-rate style="margin: 0 10px" v-model="item.average_score" disabled allow-half></el-rate>
+              <span style="color: #666">{{ item.created_time }}</span>
             </div>
-            <div style="line-height: 24px; color:  #666;">{{ item.comment }}</div>
+            <div style="line-height: 24px; color:  #666;">{{ item.content }}</div>
           </div>
           <el-pagination layout="total, prev, pager, next" v-model:current-page="data.pageNumShort"
                          v-model:page-size="data.pageSizeShort"
@@ -78,12 +78,12 @@
           <div style="border-bottom: 1px solid #eee; padding: 20px 0" v-for="item in data.commentLongList"
                :key="item.id">
             <div style="display: flex; align-items: center; margin-bottom: 5px">
-              <span>{{ item.userName }}</span>
-              <el-rate style="margin: 0 10px" v-model="item.score" disabled allow-half></el-rate>
-              <span style="color: #666">{{ item.time }}</span>
+              <span>{{ item.author.username }}</span>
+              <el-rate style="margin: 0 10px" v-model="item.average_score" disabled allow-half></el-rate>
+              <span style="color: #666">{{ item.created_time }}</span>
             </div>
-            <div style="line-height: 24px; color:  #666; margin-bottom: 5px" class="line3" v-html="item.comment"></div>
-            <div><span style="color: #1967e3; cursor: pointer" @click="viewLongComment(item.comment)">查看更多...</span>
+            <div style="line-height: 24px; color:  #666; margin-bottom: 5px" class="line3" v-html="item.content"></div>
+            <div><span style="color: #1967e3; cursor: pointer" @click="viewLongComment(item.content)">查看更多...</span>
             </div>
           </div>
           <el-pagination layout="total, prev, pager, next" v-model:current-page="data.pageNumLong"
@@ -95,11 +95,11 @@
       <div style="width: 300px; padding: 20px" class="card">
         <div style="font-size: 20px; margin-bottom: 20px">相关推荐</div>
         <div style="margin-bottom: 20px; cursor: pointer" v-for="item in data.recommendList" :key="item.id"
-             @click="goDetail(item.id)">
-          <img :src="item.cover" alt="" style="width: 100%; height: 300px; margin-bottom: 5px">
-          <div style="font-size: 18px">{{ item.name }}</div>
+             @click="goDetail(item.entity.id)">
+          <img :src="item.entity.logo" alt="" style="width: 100%; height: 300px; margin-bottom: 5px">
+          <div style="font-size: 18px">{{ item.entity.name }}</div>
           <div>
-            <el-rate v-model="item.score" disabled allow-half show-score></el-rate>
+            <el-rate v-model="item.entity.average_score" disabled allow-half show-score></el-rate>
           </div>
         </div>
       </div>
@@ -120,12 +120,12 @@
           <el-rate v-model="data.score4" allow-half show-score></el-rate>
         </el-form-item>
         <el-form-item label="平均能力">
-          <el-rate v-model="data.form.score" allow-half show-score disabled></el-rate>
+          <el-rate v-model="data.form.average_score" allow-half show-score disabled></el-rate>
         </el-form-item>
-        <el-form-item label="内容" v-if="data.form.type === '短评'">
-          <el-input :rows="5" type="textarea" v-model="data.form.comment" autocomplete="off" placeholder="请输入内容"/>
+        <el-form-item label="内容" v-if="data.form.type === 0">
+          <el-input :rows="5" type="textarea" v-model="data.form.content" autocomplete="off" placeholder="请输入内容"/>
         </el-form-item>
-        <el-form-item label="内容" prop="comment" v-if="data.form.type === '长评'">
+        <el-form-item label="内容" prop="comment" v-if="data.form.type === 1">
           <div style="border: 1px solid #ccc; width: 100%">
             <Toolbar
                 style="border-bottom: 1px solid #ccc"
@@ -134,7 +134,7 @@
             />
             <Editor
                 style="height: 500px; overflow-y: hidden;"
-                v-model="data.form.comment"
+                v-model="data.form.content"
                 :mode="mode"
                 :defaultConfig="editorConfig"
                 @onCreated="handleCreated"
@@ -233,10 +233,14 @@ const addComment = (type) => {
 
 // 新增评论的方法
 const save = () => {
-  data.form.AIId = data.id
-  data.form.userId = data.user.id
-  request.post('/comment/add', data.form).then(res => {
-    if (res.code === '200') {
+  data.form.entityAI_id = data.id
+  data.form.score1 = data.score1
+  data.form.score2 = data.score2
+  data.form.score3 = data.score3
+  data.form.score4 = data.score4
+  request.post('/comment/', data.form).then(res => {
+    if (res.status === 'success') {
+      console.log(res)
       data.formVisible = false
       ElMessage.success('评论成功')
       loadShortComment()
@@ -245,49 +249,58 @@ const save = () => {
       ElMessage.success(res.msg)
     }
   })
+  load()
+  data.score1 = 0
+  data.score2 = 0
+  data.score3 = 0
+  data.score4 = 0
 }
 
 const loadShortComment = () => {
-  request.get('/comment/selectPage', {
+  request.get('/comment/', {
     params: {
-      pageNum: data.pageNumShort,
-      pageSize: data.pageSizeShort,
-      filmId: data.id,
-      type: '短评'
+      // pageNum: data.pageNumShort,
+      // pageSize: data.pageSizeShort,
+      entityAI: data.id,
+      type: 0
     }
   }).then(res => {
-    data.commentShortList = res.data.list
-    data.totalShort = res.data.total
+    data.commentShortList = res.data
+    data.totalShort = res.data.length
   })
 }
 loadShortComment()
 
 const loadLongComment = () => {
-  request.get('/comment/selectPage', {
+  request.get('/comment/', {
     params: {
-      pageNum: data.pageNumShort,
-      pageSize: data.pageSizeShort,
-      filmId: data.id,
-      type: '长评'
+      // pageNum: data.pageNumShort,
+      // pageSize: data.pageSizeShort,
+      entityAI: data.id,
+      type: 1
     }
   }).then(res => {
-    data.commentLongList = res.data.list
-    data.totalLong = res.data.total
+    data.commentLongList = res.data
+    data.totalLong = res.data.length
   })
 }
 loadLongComment()
 
-request.get('/entity-ai/' + data.id).then(res => {
-  data.AI = res.data
-  data.type = res.data.type
-})
+const load = () => {
+  request.get('/entity-ai/' + data.id).then(res => {
+    data.AI = res.data
+    data.type = res.data.type
+    data.isStared = res.data.is_liked
+  })
+}
+load()
 
-request.get('/film/selectRecommend/' + data.id).then(res => {
+request.get('/recommend/').then(res => {
   data.recommendList = res.data
 })
 
 const goDetail = (id) => {
-  location.href = '/filmDetail?id=' + id
+  location.href = '/AIDetail?id=' + id
 }
 
 watch(
@@ -298,37 +311,26 @@ watch(
     //{immediate: true}  // 立即执行一次（初始化时也会更新平均分）
 );
 const updateAverageScore = () => {
-  data.form.score = parseFloat(((data.score1 + data.score2 + data.score3 + data.score4) / 4).toFixed(1));
+  data.form.average_score = parseFloat(((data.score1 + data.score2 + data.score3 + data.score4) / 4).toFixed(1));
 
 }
 
 /********************收藏逻辑********************************/
 //收藏，点击收藏之后触发
 const toggleStar = () => { //修改多对多关系,在后端实现
-  //data.isStared ? deleteStar() : addStar()
+  data.isStared ? deleteStar() : addStar()
   data.isStared = !data.isStared
 }
 
-//获得start关系
-const getStar = () => {
-  request.get('', data.AI.id, data.user.id).then(res => {
-    data.isStared = res.data.isStared
-  })
-}
-getStar()
 
 const deleteStar = () => {
-  request.delete('', data.AI.id, data.user.id).then(res => {
-    data.isStared = res.data.isStared
+  request.delete('like/' + data.AI.id + '/').then(res => {
   })
-  getStar()
 }
 
 const addStar = () => {
-  request.post('', data.AI.id, data.user.id).then(res => {
-
+  request.post('like/' + data.AI.id + '/').then(res => {
   })
-  getStar()
 }
 
 </script>
