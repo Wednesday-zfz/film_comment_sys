@@ -79,16 +79,16 @@ const preview = (comment) => {
 const load = () => {
   request.get('/comment/', {
     params: {
-      // pageNum: data.pageNum,
-      // pageSize: data.pageSize,
-      // filmName: data.filmName,
-      // userId: data.user.role === 'ADMIN' ? null : data.user.id
+      page: data.pageNum,
+      page_size: data.pageSize,
+      author: data.user.id,
     }
   }).then(res => {
-    data.tableData = data.AIName == null ? res.data : res.data.filter(row => {
+    console.log(res)
+    data.tableData = data.AIName == null ? res.data.results : res.data.results.filter(row => {
       return row.entityAI.name.includes(data.AIName)
     })
-    // data.total = res.data.total
+    data.total = res.data.count
   })
 }
 load()

@@ -51,7 +51,6 @@ export default {
 
 
     renderCharts() {
-      console.log(111)
 
       // 1. 总评分前十
       const topScores = this.statistics.total_scores.slice(0, 10);
@@ -690,7 +689,7 @@ export default {
             name: '评分细则',
             type: 'radar',
             data: scoreDetails.map(item => ({
-              value: [item.total_score1, item.total_score2, item.total_score3, item.total_score4],
+              value: [item.total_score1_rounded, item.total_score2_rounded, item.total_score3_rounded, item.total_score4_rounded],
               name: item.name,
             })),
           },
@@ -866,7 +865,7 @@ export default {
             name: '评分细则',
             type: 'radar',
             data: likeDetails.map(item => ({
-              value: [item.total_score1, item.total_score2, item.total_score3, item.total_score4],
+              value: [item.total_score1_rounded, item.total_score2_rounded, item.total_score3_rounded, item.total_score4_rounded],
               name: item.name,
             })),
           },

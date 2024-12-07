@@ -48,7 +48,7 @@
                 </div>
               </div>
             </div>
-            <div style="font-size: 13px; height: 50px; color: #666" class="line3">{{ item.description }}</div>
+            <div style="font-size: 13px; height: 54px; color: #666" class="line3">{{ item.description }}</div>
             <!--          <img :src="item.cover" alt="" style="width: 100%; height: 250px; border-radius: 5px">-->
             <!--          <div style="margin: 5px 0; font-size: 18px" class="line1">{{ item.name }}</div>-->
             <!--          <div style="margin: 5px 0; display: flex; align-items: center">-->
@@ -98,6 +98,7 @@ loadCategory()
 // 根据分类查询电影列表
 const loadFilmByCategory = (categoryId) => {
   data.categoryId = categoryId
+  data.pageNum = 1;
   load()
 }
 
@@ -114,7 +115,7 @@ const load = () => {
     data.tableData = res.data.results.filter(res => {
       return data.name == null || res.name.includes(data.name)
     })
-    data.total = data.tableData.length
+    data.total = res.data.count;
   })
 }
 load()

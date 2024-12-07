@@ -96,7 +96,7 @@
         <div style="font-size: 20px; margin-bottom: 20px">相关推荐</div>
         <div style="margin-bottom: 20px; cursor: pointer" v-for="item in data.recommendList" :key="item.id"
              @click="goDetail(item.entity.id)">
-          <img :src="item.entity.logo" alt="" style="width: 100%; height: 300px; margin-bottom: 5px">
+          <img :src="item.entity.logo" alt="" style="width: 200px; height: 200px; margin-bottom: 5px">
           <div style="font-size: 18px">{{ item.entity.name }}</div>
           <div>
             <el-rate v-model="item.entity.average_score" disabled allow-half show-score></el-rate>
@@ -133,7 +133,7 @@
                 :mode="mode"
             />
             <Editor
-                style="height: 500px; overflow-y: hidden;"
+                style="height: 180px; overflow-y: hidden;"
                 v-model="data.form.content"
                 :mode="mode"
                 :defaultConfig="editorConfig"
@@ -238,6 +238,7 @@ const save = () => {
   data.form.score2 = data.score2
   data.form.score3 = data.score3
   data.form.score4 = data.score4
+
   request.post('/comment/', data.form).then(res => {
     if (res.status === 'success') {
       console.log(res)
@@ -245,11 +246,15 @@ const save = () => {
       ElMessage.success('评论成功')
       loadShortComment()
       loadLongComment()
+      load()
+
     } else {
       ElMessage.success(res.msg)
     }
+  }).catch(err => {
+    ElMessage.error('评论失败')
+    console.log(err)
   })
-  load()
   data.score1 = 0
   data.score2 = 0
   data.score3 = 0
@@ -259,14 +264,14 @@ const save = () => {
 const loadShortComment = () => {
   request.get('/comment/', {
     params: {
-      // pageNum: data.pageNumShort,
-      // pageSize: data.pageSizeShort,
+      page: data.pageNumShort,
+      page_size: data.pageSizeShort,
       entityAI: data.id,
       type: 0
     }
   }).then(res => {
-    data.commentShortList = res.data
-    data.totalShort = res.data.length
+    data.commentShortList = res.data.results
+    data.totalShort = res.data.count
   })
 }
 loadShortComment()
@@ -274,14 +279,14 @@ loadShortComment()
 const loadLongComment = () => {
   request.get('/comment/', {
     params: {
-      // pageNum: data.pageNumShort,
-      // pageSize: data.pageSizeShort,
+      page: data.pageNumLong,
+      page_size: data.pageSizeLong,
       entityAI: data.id,
       type: 1
     }
   }).then(res => {
-    data.commentLongList = res.data
-    data.totalLong = res.data.length
+    data.commentLongList = res.data.results
+    data.totalLong = res.data.count
   })
 }
 loadLongComment()
