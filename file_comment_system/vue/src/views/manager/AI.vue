@@ -204,6 +204,7 @@ const handleEdit = (row) => {
 
   data.form = JSON.parse(JSON.stringify(row))  // 给表单赋值当前的行对象的数据  深度拷贝
   data.formVisible = true
+  data.newTypeName = row.type.name
   // console.log(data.form)
 }
 const update = async () => {
@@ -256,7 +257,7 @@ const save = () => {
 
 const del = (id) => {
   ElMessageBox.confirm('删除数据后无法恢复，您确认吗？', '确认删除', {type: 'warning'}).then(res => {
-    request.delete('/entity-ai/' + data.form.id + '/').then(res => {
+    request.delete('/entity-ai/' + id + '/').then(res => {
       if (res.status === 'success') {
         load()
         ElMessage.success('操作成功')
