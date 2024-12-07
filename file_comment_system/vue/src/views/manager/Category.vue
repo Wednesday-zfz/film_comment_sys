@@ -64,8 +64,10 @@ const load = () => {
       // name: data.name
     }
   }).then(res => {
-    data.tableData = res.data
-    data.total = res.data.length
+    data.tableData = res.data.filter(res => {
+      return data.name == null || res.name.includes(data.name)
+    })
+    data.total = data.tableData.length
   })
 }
 load()

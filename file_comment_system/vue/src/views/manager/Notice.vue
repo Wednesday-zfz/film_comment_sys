@@ -69,8 +69,10 @@ const load = () => {
       // title: data.title
     }
   }).then(res => {
-    data.tableData = res.data.results
-    data.total = res.data.count
+    data.tableData = res.data.results.filter(res => {
+      return data.title == null || res.title.includes(data.title)
+    })
+    data.total = data.tableData.length
   })
 }
 load()

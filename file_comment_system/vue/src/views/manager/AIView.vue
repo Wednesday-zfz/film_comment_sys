@@ -33,7 +33,8 @@
                        @click="goDetail(item.id)">
                 </el-tooltip>
                 <div style="flex: 1">
-                  <el-rate v-model="item.average_score" disabled allow-half show-score style="margin-bottom: 5px"></el-rate>
+                  <el-rate v-model="item.average_score" disabled allow-half show-score
+                           style="margin-bottom: 5px"></el-rate>
                   <div style="text-align: left; color: #1967e3;margin-bottom: 20px;">{{ item.like_count }}人收藏</div>
                   <el-tooltip class="item" effect="dark" content="跳转链接" placement="bottom">
                     <el-button type="primary" circle size="small">
@@ -47,7 +48,7 @@
                 </div>
               </div>
             </div>
-            <div style="font-size: 13px; color: #666" class="line3">{{ item.description }}</div>
+            <div style="font-size: 13px; height: 50px; color: #666" class="line3">{{ item.description }}</div>
             <!--          <img :src="item.cover" alt="" style="width: 100%; height: 250px; border-radius: 5px">-->
             <!--          <div style="margin: 5px 0; font-size: 18px" class="line1">{{ item.name }}</div>-->
             <!--          <div style="margin: 5px 0; display: flex; align-items: center">-->
@@ -103,15 +104,17 @@ const loadFilmByCategory = (categoryId) => {
 const load = () => {
   request.get('/entity-ai/', {
     params: {
-      // pageNum: data.pageNum,
-      // pageSize: data.pageSize,
-      name: data.name,
+      page: data.pageNum,
+      page_size: data.pageSize,
+      // name: data.name,
       type: data.categoryId
     }
   }).then(res => {
-    console.log(res.data)
-    data.tableData = res.data
-    //data.total = res.data.total
+    console.log(data.name)
+    data.tableData = res.data.results.filter(res => {
+      return data.name == null || res.name.includes(data.name)
+    })
+    data.total = data.tableData.length
   })
 }
 load()
@@ -154,6 +157,7 @@ const reset = () => {
   border-color: #409EFF; /* 悬停时的边框颜色 */
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* 阴影效果 */
 }
+
 .el-card:hover {
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.5); /* 更明显的阴影 */
   transform: translateY(-5px); /* 鼠标悬停时浮起 */
