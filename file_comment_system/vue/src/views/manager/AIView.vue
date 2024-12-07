@@ -1,10 +1,20 @@
 <template>
   <div>
-    <div class="card" style="margin-bottom: 5px">
-      <el-input v-model="data.name" placeholder="请输入AI名称查询" style="width: 300px; margin-right: 10px"></el-input>
-      <el-button type="primary" @click="load">查询</el-button>
-      <el-button type="info" @click="reset">重置</el-button>
+    <div class="card" style="margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; align-items: center;">
+        <el-input v-model="data.name" placeholder="请输入AI名称查询"
+                  style="width: 300px; margin-right: 10px"></el-input>
+        <el-button type="primary" @click="load">查询</el-button>
+        <el-button type="info" @click="reset">重置</el-button>
+      </div>
+      <el-select v-model="data.sortType" placeholder="选择排序方式" @change="handleSortChange"
+                 style="width: 150px; margin-right: 10px;">
+        <el-option label="字母序排序" value="pinyin_name"></el-option>
+        <el-option label="评分排序" value="-average_score"></el-option>
+        <el-option label="收藏量排序" value="-like_count"></el-option>
+      </el-select>
     </div>
+
 
     <div class="card" style="margin-bottom: 5px">
       <el-button :class="{ 'film-active' : data.categoryId === null }" @click="loadFilmByCategory(null)">全部
@@ -29,7 +39,7 @@
             <div style="position: relative;margin-bottom: 10px">
               <div style="display: flex; grid-gap: 10px; flex: 1;">
                 <el-tooltip class="item" effect="dark" content="详情页面" placement="bottom">
-                  <img :src="item.cover" alt="" style="width: 100px; height: 100px; border-radius: 5px"
+                  <img :src="item.logo" alt="" style="width: 100px; height: 100px; border-radius: 5px"
                        @click="goDetail(item.id)">
                 </el-tooltip>
                 <div style="flex: 1">
@@ -80,7 +90,8 @@ const data = reactive({
   tableData: [],
   total: 0,
   categoryList: [],
-  categoryId: null
+  categoryId: null,
+  sortType: "pinyin_name"
 })
 
 const goDetail = (id) => {
@@ -102,13 +113,20 @@ const loadFilmByCategory = (categoryId) => {
   load()
 }
 
+const handleSortChange = () => {
+  data.pageNum = 1; // 切换排序时，重置为第一页
+  load(); // 重新加载数据
+};
+
+
 const load = () => {
   request.get('/entity-ai/', {
     params: {
       page: data.pageNum,
       page_size: data.pageSize,
       // name: data.name,
-      type: data.categoryId
+      type: data.categoryId,
+      ordering: data.sortType
     }
   }).then(res => {
     console.log(data.name)
