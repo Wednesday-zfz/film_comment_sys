@@ -37,7 +37,7 @@
           </el-menu-item>
           <el-menu-item index="/Histogram">
             <el-icon>
-              <Histogram />
+              <Histogram/>
             </el-icon>
             <span>统计分析</span>
           </el-menu-item>
@@ -78,6 +78,12 @@
               <User/>
             </el-icon>
             <span>个人资料</span>
+          </el-menu-item>
+          <el-menu-item index="/team">
+            <el-icon>
+              <More/>
+            </el-icon>
+            <span>关于我们</span>
           </el-menu-item>
         </el-menu>
       </div>
