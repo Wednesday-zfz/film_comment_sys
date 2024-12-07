@@ -10,7 +10,7 @@
 
       <el-table :data="data.tableData" stripe>
         <el-table-column prop="name" width="100" label="名称"/>
-        <el-table-column prop="cover" width="100" label="logo">
+        <el-table-column prop="logo" width="100" label="logo">
           <template #default="scope">
             <el-image :src="scope.row.logo" style="width: 40px; height: 40px; border-radius: 5px"
                       :preview-src-list="[scope.row.logo]" preview-teleported></el-image>
@@ -62,7 +62,7 @@
             上传封面
           </el-button>
         </el-form-item>
-        <el-image v-if="data.newLogoUrl||data.form.cover" :src="data.newCoverUrl ? data.newCoverUrl : data.form.cover"
+        <el-image v-if="data.newCoverUrl||data.form.cover" :src="data.newCoverUrl ? data.newCoverUrl : data.form.cover"
                   style="width: 160px; height: 90px; border-radius: 5px; margin-left: 80px; margin-bottom: 10px; margin-top: -10px"></el-image>
 
         <el-form-item label="分类">
@@ -132,8 +132,10 @@ const load = () => {
       //name: data.name
     }
   }).then(res => {
-    data.tableData = res.data.results
-    data.total = res.data.count
+    data.tableData = res.data.results.filter(res => {
+      return data.name == null || res.name.includes(data.name)
+    })
+    data.total = data.name ? data.tableData.length : res.data.count
   })
 }
 load()

@@ -133,7 +133,7 @@ const load = () => {
     data.tableData = res.data.results.filter(res => {
       return data.name == null || res.name.includes(data.name)
     })
-    data.total = res.data.count;
+    data.total = data.name ? data.tableData.length : res.data.count;
   })
 }
 load()
