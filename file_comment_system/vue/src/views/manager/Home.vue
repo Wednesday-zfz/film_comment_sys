@@ -1,7 +1,7 @@
 <template>
   <div style="display: flex; grid-gap: 10px">
     <div class="card" style="width: 50%; padding: 20px">
-      <div style="margin-bottom: 20px; font-size: 20px; font-weight: bold">电影评分榜</div>
+      <div style="margin-bottom: 20px; font-size: 20px; font-weight: bold">AI评分榜</div>
       <div v-for="(item, index) in data.AIList" :key="item.id" @click="goDetail(item.entity.id)"
            style="cursor: pointer; margin-bottom: 10px">
         <!--        <div style="display: flex; grid-gap: 10px">-->

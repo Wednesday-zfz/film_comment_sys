@@ -201,12 +201,12 @@ export default {
 
       <div v-if="!allCleared" class="container">
         <div class="left">
-          <div class="login">登陆</div>
+          <div class="login">登录</div>
           <div class="eula">
-            <b>登陆之前保证已注册账号</b>
+            <b>登录之前保证已注册账号</b>
             <br/>
             <br/>
-            <b>可选择用户名密码登陆or短信验证码登陆</b>
+            <b>可选择用户名密码登录or短信验证码登录</b>
           </div>
         </div>
 
