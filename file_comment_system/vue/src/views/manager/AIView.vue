@@ -120,21 +120,34 @@ const handleSortChange = () => {
 
 
 const load = () => {
-  request.get('/entity-ai/', {
-    params: {
-      page: data.pageNum,
-      page_size: data.pageSize,
-      // name: data.name,
-      type: data.categoryId,
-      ordering: data.sortType
-    }
-  }).then(res => {
-    console.log(data.name)
-    data.tableData = res.data.results.filter(res => {
-      return data.name == null || res.name.includes(data.name)
+  if (data.name) {
+    request.get('/search/', {
+      params: {
+        page: data.pageNum,
+        page_size: data.pageSize,
+        q: data.name,
+        type: data.categoryId,
+        ordering: data.sortType
+      }
+    }).then(res => {
+      data.tableData = res.data.results
+      data.total = res.data.count;
     })
-    data.total = data.name ? data.tableData.length : res.data.count;
-  })
+  } else {
+    request.get('/entity-ai/', {
+      params: {
+        page: data.pageNum,
+        page_size: data.pageSize,
+        // name: data.name,
+        type: data.categoryId,
+        ordering: data.sortType
+      }
+    }).then(res => {
+      console.log(data.name)
+      data.tableData = res.data.results
+      data.total = res.data.count;
+    })
+  }
 }
 load()
 

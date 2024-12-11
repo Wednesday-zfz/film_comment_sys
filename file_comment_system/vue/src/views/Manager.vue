@@ -5,7 +5,7 @@
       <div style="flex: 1">
         <div style="padding-left: 20px; display: flex; align-items: center">
           <img src="/Ai.svg" alt="" style="width: 40px">
-          <div style="font-weight: bold; font-size: 24px; margin-left: 5px; color: #f6b502 ">AI评论系统</div>
+          <div style="font-weight: bold; font-size: 24px; margin-left: 5px; color: #f6b502 ">AIJC</div>
         </div>
       </div>
       <div style="width: fit-content; padding-right: 10px; display: flex; align-items: center;">

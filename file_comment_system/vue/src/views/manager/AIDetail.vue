@@ -94,14 +94,14 @@
         </div>
       </div>
 
-      <div style="width: 300px; padding: 20px" class="card">
+      <div style="width: 200px; padding: 20px" class="card">
         <div style="font-size: 20px; margin-bottom: 20px">相关推荐</div>
         <div style="margin-bottom: 20px; cursor: pointer" v-for="item in data.recommendList" :key="item.id"
-             @click="goDetail(item.entity.id)">
-          <img :src="item.entity.logo" alt="" style="width: 200px; height: 200px; margin-bottom: 5px">
-          <div style="font-size: 18px">{{ item.entity.name }}</div>
+             @click="goDetail(item.id)">
+          <img :src="item.logo" alt="" style="width: 150px; height: 150px; margin-bottom: 5px">
+          <div style="font-size: 18px">{{ item.name }}</div>
           <div>
-            <el-rate v-model="item.entity.average_score" disabled allow-half show-score></el-rate>
+            <el-rate v-model="item.average_score" disabled allow-half show-score></el-rate>
           </div>
         </div>
       </div>
@@ -311,8 +311,15 @@ const load = () => {
 }
 load()
 
-request.get('/recommend/').then(res => {
+request.get('/recommend-similar/', {
+     params: {
+      entityAI: data.id
+    }
+}).then(res => {
   data.recommendList = res.data
+  for (let item of data.recommendList) {
+    item.average_score = ((item.total_score1 + item.total_score2 + item.total_score3 + item.total_score4) / 4).toFixed(2)
+  }
 })
 
 const goDetail = (id) => {
